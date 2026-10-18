@@ -83,7 +83,7 @@ def main() -> None:
             print(f"  [{i}] {s!r}")
 
         # ── Save to output/<filename>.longest.txt ─────────────────────────────
-        out_path = os.path.join(OUTPUT_DIR, filename + ".longest.txt")
+        out_path = os.path.join(OUTPUT_DIR, filename.split('.')[0] + ".longest.txt")
         with open(out_path, "w") as f:
             f.write(f"filename: {filename}\n")
             f.write(f"longest_length: {max_len}\n")
