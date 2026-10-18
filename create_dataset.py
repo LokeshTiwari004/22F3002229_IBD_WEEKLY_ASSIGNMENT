@@ -47,7 +47,7 @@ def create_data_file(folder: str = "data") -> str:
     filepath = os.path.join(folder, filename)
 
     with open(filepath, "w") as f:
-        f.write(".".join(sentences) + ".\n")
+        f.write(". ".join(sentences) + ".\n")
         f.write(str(max_length) + "\n")
 
     return filepath
