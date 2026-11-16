@@ -2,3 +2,7 @@
 data/
 output/
 answer.csv
+.env
+TODO.md
+metastore_db/
+derby.log
