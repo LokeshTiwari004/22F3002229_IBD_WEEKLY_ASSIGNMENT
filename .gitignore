@@ -6,3 +6,4 @@ answer.csv
 TODO.md
 metastore_db/
 derby.log
+sql/*.rendered.sql
