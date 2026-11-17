@@ -8,7 +8,7 @@ CREATE TEMPORARY VIEW transactions_tv (
   city STRING
 ) USING csv
 OPTIONS (
-  path '${INPUT_PREFIX}/data/transactions.csv',
+  path '${ROOT_DIR_PATH}/data/transactions.csv',
   header 'true'
 );
 
@@ -22,7 +22,7 @@ CREATE TEMPORARY VIEW customer_master_tv (
   current_flag INT
 ) USING csv
 OPTIONS (
-  path '${INPUT_PREFIX}/data/customer_master.csv',
+  path '${ROOT_DIR_PATH}/data/customer_master.csv',
   header 'true'
 );
 
@@ -34,7 +34,7 @@ CREATE TEMPORARY VIEW customer_updates_tv (
   change_date DATE
 ) USING csv
 OPTIONS (
-  path '${INPUT_PREFIX}/data/customer_updates.csv',
+  path '${ROOT_DIR_PATH}/data/customer_updates.csv',
   header 'true'
 );
 
