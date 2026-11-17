@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS transactions;
-CREATE TABLE transactions (
+-- create temporary views
+CREATE TEMPORARY VIEW transactions_tv (
   transaction_id STRING,
   customer_id STRING,
   transaction_date DATE,
@@ -12,8 +12,7 @@ OPTIONS (
   header 'true'
 );
 
-DROP TABLE IF EXISTS customer_master;
-CREATE TABLE customer_master (
+CREATE TEMPORARY VIEW customer_master_tv (
   customer_id STRING,
   customer_name STRING,
   city STRING,
@@ -27,8 +26,7 @@ OPTIONS (
   header 'true'
 );
 
-DROP TABLE IF EXISTS customer_updates;
-CREATE TABLE customer_updates (
+CREATE TEMPORARY VIEW customer_updates_tv (
   customer_id STRING,
   customer_name STRING,
   city STRING,
@@ -39,3 +37,20 @@ OPTIONS (
   path '${INPUT_PREFIX}/data/customer_updates.csv',
   header 'true'
 );
+
+
+--- 2. Materialize the Data
+CREATE TABLE IF NOT EXISTS transactions
+USING parquet
+AS
+SELECT * FROM transactions_tv;
+
+CREATE TABLE IF NOT EXISTS customer_master
+USING parquet
+AS
+SELECT * FROM customer_master_tv;
+
+CREATE TABLE IF NOT EXISTS customer_updates
+USING parquet
+AS
+SELECT * FROM customer_updates_tv;
