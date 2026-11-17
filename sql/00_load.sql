@@ -1,5 +1,5 @@
 -- create temporary views
-CREATE TEMPORARY VIEW transactions_tv (
+CREATE OR REPLACE TEMPORARY VIEW transactions_tv (
   transaction_id STRING,
   customer_id STRING,
   transaction_date DATE,
@@ -8,11 +8,11 @@ CREATE TEMPORARY VIEW transactions_tv (
   city STRING
 ) USING csv
 OPTIONS (
-  path '${ROOT_DIR_PATH}/data/transactions.csv',
+  path '${ROOT_DIR}/data/transactions.csv',
   header 'true'
 );
 
-CREATE TEMPORARY VIEW customer_master_tv (
+CREATE OR REPLACE TEMPORARY VIEW customer_master_tv (
   customer_id STRING,
   customer_name STRING,
   city STRING,
@@ -22,11 +22,11 @@ CREATE TEMPORARY VIEW customer_master_tv (
   current_flag INT
 ) USING csv
 OPTIONS (
-  path '${ROOT_DIR_PATH}/data/customer_master.csv',
+  path '${ROOT_DIR}/data/customer_master.csv',
   header 'true'
 );
 
-CREATE TEMPORARY VIEW customer_updates_tv (
+CREATE OR REPLACE TEMPORARY VIEW customer_updates_tv (
   customer_id STRING,
   customer_name STRING,
   city STRING,
@@ -34,23 +34,24 @@ CREATE TEMPORARY VIEW customer_updates_tv (
   change_date DATE
 ) USING csv
 OPTIONS (
-  path '${ROOT_DIR_PATH}/data/customer_updates.csv',
+  path '${ROOT_DIR}/data/customer_updates.csv',
   header 'true'
 );
 
 
 -- 2. Materialize the Data
 CREATE TABLE IF NOT EXISTS transactions
-USING ${FILE_FORMAT}
+USING iceberg
 AS
 SELECT * FROM transactions_tv;
 
-CREATE TABLE IF NOT EXISTS customer_master
-USING ${FILE_FORMAT}
+DROP TABLE IF EXISTS customer_master;
+CREATE TABLE customer_master
+USING iceberg
 AS
 SELECT * FROM customer_master_tv;
 
 CREATE TABLE IF NOT EXISTS customer_updates
-USING ${FILE_FORMAT}
+USING iceberg
 AS
 SELECT * FROM customer_updates_tv;

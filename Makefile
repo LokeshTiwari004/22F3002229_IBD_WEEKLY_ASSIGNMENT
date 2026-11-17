@@ -5,24 +5,23 @@ APP := "IBD week 6 assignment"
 SHELL := /bin/bash
 .SHELLFLAGS := -eu -o pipefail -c
 .ONESHELL:
+-include .env
+export
 
-.PHONY: all sql-load sql-aggregations sql-scd-type1
-all: sql-load sql-aggregations sql-scd-type1
+.PHONY:
+all: local-load local-aggregations local-scd-type1 local-scd-type2
 
-sql-load:
-	set -a; source .env; set +a
-	envsubst < sql/00_load.sql > sql/00_load.rendered.sql
-	spark-sql -f sql/00_load.rendered.sql
+local-load:
+	spark-sql -f sql/00_load.sql --hivevar ROOT_DIR=${ROOT_DIR}
 
-sql-aggregations:
-	set -a; source .env; set +a
-	envsubst < sql/01_aggregations.sql > sql/01_aggregations.rendered.sql
-	spark-sql -f sql/01_aggregations.rendered.sql
+local-aggregations:
+	spark-sql -f sql/01_aggregations.sql --hivevar ROOT_DIR=${ROOT_DIR}
 
-sql-scd-type1:
-	set -a; source .env; set +a
-	envsubst < sql/02_scd_type1.sql > sql/02_scd_type1.rendered.sql
-	spark-sql -f sql/02_scd_type1.rendered.sql
+local-scd-type1: local-sql-load
+	spark-sql -f sql/02_scd_type1.sql --hivevar ROOT_DIR=${ROOT_DIR}
+
+local-scd-type2: local-sql-load
+	spark-sql -f sql/03_scd_type2.sql --hivevar ROOT_DIR=${ROOT_DIR}
 
 clean:
 	rm -rf iceberg-warehouse spark-warehouse output derby.log metastore_db

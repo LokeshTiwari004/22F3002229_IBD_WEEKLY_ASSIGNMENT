@@ -6,7 +6,8 @@ answer.csv
 TODO.md
 metastore_db/
 derby.log
-sql/*.rendered.sql
+# sql/
+!sql/*.unrendered.sql
 spark-warehouse/
 spark-defaults.conf
 iceberg-warehouse/
