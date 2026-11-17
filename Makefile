@@ -6,8 +6,8 @@ SHELL := /bin/bash
 .SHELLFLAGS := -eu -o pipefail -c
 .ONESHELL:
 
-.PHONY: all sql-load sql-aggregations
-all: sql-load sql-aggregations
+.PHONY: all sql-load sql-aggregations sql-scd-type1
+all: sql-load sql-aggregations sql-scd-type1
 
 sql-load:
 	set -a; source .env; set +a
@@ -18,3 +18,11 @@ sql-aggregations:
 	set -a; source .env; set +a
 	envsubst < sql/01_aggregations.sql > sql/01_aggregations.rendered.sql
 	spark-sql -f sql/01_aggregations.rendered.sql
+
+sql-scd-type1:
+	set -a; source .env; set +a
+	envsubst < sql/02_scd_type1.sql > sql/02_scd_type1.rendered.sql
+	spark-sql -f sql/02_scd_type1.rendered.sql
+
+clean:
+	rm -rf iceberg-warehouse spark-warehouse output derby.log metastore_db
