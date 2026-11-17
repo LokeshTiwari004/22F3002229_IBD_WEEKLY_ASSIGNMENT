@@ -6,7 +6,6 @@ SELECT * FROM customer_master ORDER BY customer_id;
 -- BEFORE Driver LOGS
 SELECT 'Before SCD Type 1';
 SELECT * FROM customer_master ORDER BY customer_id LIMIT 10;
-SELECT COUNT(*) AS row_count FROM customer_master;
 
 
 -- Apply SCD Type 1 (using MERGE requires ICEBERG/DELTA tables)
@@ -28,4 +27,3 @@ SELECT * FROM customer_master ORDER BY customer_id;
 -- AFTER Driver LOGS
 SELECT 'After SCD Type 1';
 SELECT * FROM customer_master ORDER BY customer_id LIMIT 10;
-SELECT COUNT(*) AS row_count FROM customer_master;

@@ -9,7 +9,7 @@ SHELL := /bin/bash
 export
 
 .PHONY:
-all: local-load local-aggregations local-scd-type1 local-scd-type2
+all: local-load local-aggregations local-scd-type1 local-scd-type2 local-validation
 
 local-load:
 	spark-sql -f sql/00_load.sql --hivevar ROOT_DIR=${ROOT_DIR}
@@ -22,6 +22,9 @@ local-scd-type1: local-sql-load
 
 local-scd-type2: local-sql-load
 	spark-sql -f sql/03_scd_type2.sql --hivevar ROOT_DIR=${ROOT_DIR}
+
+local-validation:
+	spark-sql -f sql/04_validation.sql --hivevar ROOT_DIR=${ROOT_DIR}
 
 clean:
 	rm -rf iceberg-warehouse spark-warehouse output derby.log metastore_db

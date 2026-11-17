@@ -6,7 +6,6 @@ SELECT * FROM customer_master ORDER BY customer_id, effective_date;
 -- Before Driver LOGS
 SELECT 'Before SCD Type 2';
 SELECT * FROM customer_master ORDER BY customer_id, effective_date LIMIT 10;
-SELECT COUNT(*) AS row_count FROM customer_master;
 
 
 -- Merge SCD Type 2
@@ -39,5 +38,4 @@ SELECT * FROM customer_master ORDER BY customer_id, effective_date;
 
 -- After Driver LOGS
 SELECT 'After SCD Type 2';
-SELECT * FROM customer_master ORDER BY customer_id, effective_date LIMIT 10;
-SELECT COUNT(*) AS row_count FROM customer_master;
+SELECT * FROM customer_master ORDER BY customer_id, effective_date LIMIT 15;
