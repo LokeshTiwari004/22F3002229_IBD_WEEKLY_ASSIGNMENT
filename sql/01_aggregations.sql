@@ -28,20 +28,25 @@ SELECT
 FROM transactions;
 
 
--- Log result
+-- Log result and validation
 
 SELECT 'Aggregations completed';
 
-SELECT customer_id, SUM(transaction_amount) AS total_amount
-FROM transactions
-GROUP BY customer_id
-ORDER BY total_amount DESC
-LIMIT 5;
+SELECT 'Top 5 customers' AS check_name;
+SELECT * FROM (
+  SELECT customer_id, SUM(transaction_amount) AS total_amount
+  FROM transactions
+  GROUP BY customer_id
+  ORDER BY total_amount DESC
+  LIMIT 5
+);
 
+SELECT 'Customers per city' AS check_name;
 SELECT city, COUNT(DISTINCT customer_id) AS customer_count
 FROM transactions
 GROUP BY city
 ORDER BY customer_count DESC;
 
-SELECT AVG(transaction_amount) AS average_transaction_amount
+SELECT 'Average transaction value' AS check_name;
+SELECT AVG(transaction_amount) AS avg_transaction_value
 FROM transactions;
