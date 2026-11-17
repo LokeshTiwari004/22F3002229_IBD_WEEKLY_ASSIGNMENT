@@ -39,18 +39,18 @@ OPTIONS (
 );
 
 
---- 2. Materialize the Data
+-- 2. Materialize the Data
 CREATE TABLE IF NOT EXISTS transactions
-USING parquet
+USING ${FILE_FORMAT}
 AS
 SELECT * FROM transactions_tv;
 
 CREATE TABLE IF NOT EXISTS customer_master
-USING parquet
+USING ${FILE_FORMAT}
 AS
 SELECT * FROM customer_master_tv;
 
 CREATE TABLE IF NOT EXISTS customer_updates
-USING parquet
+USING ${FILE_FORMAT}
 AS
 SELECT * FROM customer_updates_tv;
