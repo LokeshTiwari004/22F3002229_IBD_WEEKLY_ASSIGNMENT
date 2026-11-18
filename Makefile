@@ -10,6 +10,10 @@ export
 
 .PHONY:
 all: local-load local-aggregations local-scd-type1 local-scd-type2
+all-gcp: gcp-cluster-create gcp-job-submit gcp-fetch-results gcp-cluster-delete
+
+check:
+	echo $${CLUSTER_NAME}
 
 local-load:
 	spark-sql -f sql/00_load.sql --hivevar ROOT_DIR=${ROOT_DIR}
@@ -25,7 +29,22 @@ local-scd-type2: local-load
 
 
 gcp-cluster-create:
-	gcloud dataproc clusters create cluster-59ac --enable-component-gateway --region us-east4 --subnet default --no-address --master-machine-type n4a-standard-1 --master-boot-disk-type hyperdisk-balanced --master-boot-disk-size 500 --num-workers 1 --worker-machine-type n4a-standard-1 --worker-boot-disk-type hyperdisk-balanced --worker-boot-disk-size 500 --secondary-worker-boot-disk-type hyperdisk-balanced --secondary-worker-boot-disk-size 500 --image-version 2.3-debian12 --properties spark:spark.dataproc.engine=lightningEngine,spark:spark.dataproc.lightningEngine.runtime=default,dataproc:dataproc.logging.stackdriver.job.driver.enable=true,spark:spark.dataproc.lakehouse.project=ibd-3t26-22f3002229,dataproc:dataproc.lakehouse.defaultCatalog=standard-lh-catalog-us-east4 --optional-components ICEBERG --scopes 'https://www.googleapis.com/auth/cloud-platform' --secondary-worker-type non-preemptible --project ibd-3t26-22f3002229
+	gcloud dataproc clusters create ${CLUSTER_NAME} --region=${LOCATION} --flags-file=cluster-config.yaml
+
+gcp-job-submit:
+	cat sql/00_load.sql sql/01_aggregations.sql sql/02_scd_type1.sql sql/00_load.sql sql/03_scd_type2.sql > sql/assignment_all.sql
+	gcloud storage cp sql/assignment_all.sql gs://${BUCKET_NAME}/${GCS_PREFIX}/sql/
+	gcloud dataproc jobs submit spark-sql \
+	  --cluster=${CLUSTER_NAME} \
+	  --region=${LOCATION} \
+	  --file=gs://${BUCKET_NAME}/${GCS_PREFIX}/sql/assignment_all.sql \
+	  --params=ROOT_DIR=${GCS_ROOT_DIR}
+
+gcp-fetch-results: clean
+	gcloud storage cp --recursive gs://${BUCKET_NAME}/${GCS_PREFIX}/output/ .
+
+gcp-cluster-delete:
+	gcloud dataproc clusters delete ${CLUSTER_NAME} --region=${LOCATION}
 
 clean:
 	rm -rf iceberg-warehouse spark-warehouse output derby.log metastore_db
